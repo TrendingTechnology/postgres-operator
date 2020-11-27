@@ -284,8 +284,9 @@ func (c *Cluster) generateConnectionPoolerPodTemplate(role PostgresRole) (
 
 	podTemplate := &v1.PodTemplateSpec{
 		ObjectMeta: metav1.ObjectMeta{
-			Labels:      c.connectionPoolerLabels(role, true).MatchLabels,
-			Namespace:   c.Namespace,
+			Labels:    c.connectionPoolerLabels(role, true).MatchLabels,
+			Namespace: c.Namespace,
+			// Annotations: c.annotationsSet(c.generatePodAnnotations(spec)),
 			Annotations: c.generatePodAnnotations(spec),
 		},
 		Spec: v1.PodSpec{
@@ -387,9 +388,11 @@ func (c *Cluster) generateConnectionPoolerService(connectionPooler *ConnectionPo
 
 	service := &v1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        connectionPooler.Name,
-			Namespace:   connectionPooler.Namespace,
-			Labels:      c.connectionPoolerLabels(connectionPooler.Role, false).MatchLabels,
+			Name:      connectionPooler.Name,
+			Namespace: connectionPooler.Namespace,
+			Labels:    c.connectionPoolerLabels(connectionPooler.Role, false).MatchLabels,
+			// TODO add generateServiceAnnotations?
+			// TODO c.annotationsSet(map[string]string{})
 			Annotations: map[string]string{},
 			// make StatefulSet object its owner to represent the dependency.
 			// By itself StatefulSet is being deleted with "Orphaned"
